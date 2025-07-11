@@ -1,4 +1,4 @@
-# Budget App
+# Budget Tracker App
 
 A personal budgeting app built with Flutter. Track your budgets, expenses, and manage your finances easily.
 
