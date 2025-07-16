@@ -10,6 +10,8 @@ import 'package:budget_app/widgets/budget_card.dart';
 import 'package:budget_app/widgets/spending_chart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:budget_app/pages/login_page.dart';
+import 'package:budget_app/theme/theme_provider.dart';
+import 'package:budget_app/theme/theme_toggle.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -52,11 +54,17 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     final user = UserService.currentUser;
+    final themeNotifier = ThemeProvider.of(context);
+    final isDark = themeNotifier.themeMode == ThemeMode.dark;
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Welcome back, ${user?.name ?? ''}'),
         actions: [
+          ThemeToggle(
+            isDark: isDark,
+            onToggle: () => setState(() => themeNotifier.toggleTheme()),
+          ),
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: _deleteAccount,

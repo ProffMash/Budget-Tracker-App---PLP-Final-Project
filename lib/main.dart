@@ -5,6 +5,8 @@ import 'package:budget_app/models/expense.dart';
 import 'package:budget_app/models/user.dart';
 import 'package:budget_app/pages/splash_page.dart';
 import 'package:budget_app/theme/app_theme.dart';
+import 'package:budget_app/theme/theme_notifier.dart';
+import 'package:budget_app/theme/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +18,12 @@ void main() async {
   await Hive.openBox<Budget>('budgets');
   await Hive.openBox<Expense>('expenses');
 
-  runApp(const MyApp());
+  runApp(
+    ThemeProvider(
+      notifier: ThemeNotifier(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -24,10 +31,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = ThemeProvider.of(context);
     return MaterialApp(
       title: 'Budget App',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeNotifier.themeMode,
       home: const SplashPage(),
     );
   }
