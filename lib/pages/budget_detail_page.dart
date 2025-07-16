@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:budget_app/models/budget.dart';
 import 'package:budget_app/models/expense.dart';
@@ -114,9 +115,9 @@ class _BudgetDetailPageState extends State<BudgetDetailPage> {
             ),
             const SizedBox(height: 8),
             Expanded(
-              child: ValueListenableBuilder(
-                valueListenable: _expenseBox.listenable(),
-                builder: (context, Box<Expense> box, _) {
+              child: ValueListenableBuilder<Box<Expense>>(
+                valueListenable: Hive.box<Expense>('expenses').listenable(),
+                builder: (context, box, _) {
                   final expenses = box.getExpensesForBudget(widget.budgetId);
                   if (expenses.isEmpty) {
                     return const Center(

@@ -13,9 +13,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  intl: ^0.18.1
+  intl: ^0.18.1  # Can now use latest version
   fluttertoast: ^8.2.2
-  uuid: ^4.5.1
+  fl_chart: ^0.66.0  # Updated to latest compatible version
+  uuid: ^3.0.7
 
 dev_dependencies:
   flutter_test:
