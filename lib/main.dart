@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:budget_app/models/budget.dart';
 import 'package:budget_app/models/expense.dart';
 import 'package:budget_app/models/user.dart';
+import 'package:budget_app/models/savings_goal.dart';
 import 'package:budget_app/pages/splash_page.dart';
 import 'package:budget_app/theme/app_theme.dart';
 import 'package:budget_app/theme/theme_notifier.dart';
@@ -14,9 +15,11 @@ void main() async {
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(BudgetAdapter());
   Hive.registerAdapter(ExpenseAdapter());
+  Hive.registerAdapter(SavingsGoalAdapter());
   await Hive.openBox<User>('users');
   await Hive.openBox<Budget>('budgets');
   await Hive.openBox<Expense>('expenses');
+  await Hive.openBox<SavingsGoal>('savingsGoals');
 
   runApp(
     ThemeProvider(

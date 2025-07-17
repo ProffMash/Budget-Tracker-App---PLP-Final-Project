@@ -8,6 +8,8 @@ import 'package:budget_app/pages/budget_detail_page.dart';
 import 'package:budget_app/services/user_service.dart';
 import 'package:budget_app/widgets/budget_card.dart';
 import 'package:budget_app/widgets/spending_chart.dart';
+import 'package:budget_app/widgets/savings_goal_widget.dart';
+import 'package:budget_app/pages/savings_goal_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:budget_app/pages/login_page.dart';
 import 'package:budget_app/theme/theme_provider.dart';
@@ -76,6 +78,24 @@ class _DashboardPageState extends State<DashboardPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Savings Goals Overview
+            SavingsGoalWidget(
+              onAdd: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SavingsGoalPage(),
+                  ),
+                );
+              },
+              onEdit: (goal) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SavingsGoalPage(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
             // Dashboard Summary
             Card(
               child: Padding(
