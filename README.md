@@ -6,6 +6,8 @@ A personal budgeting app built with Flutter. Track your budgets, expenses, and m
 - Create and manage multiple budgets
 - Add and track expenses for each budget
 - View dashboard with budget summaries
+- Create and track savings plans/goals
+- Dark/Light mode toggle for personalized experience
 - Persistent storage using Hive
 
 ## Getting Started
@@ -43,8 +45,10 @@ A personal budgeting app built with Flutter. Track your budgets, expenses, and m
 ## How the App Works
 - **Budgets:** Create a budget by specifying a name and amount. Each budget is stored locally.
 - **Expenses:** Add expenses to a specific budget. The app tracks how much you have spent and how much remains.
-- **Dashboard:** View all budgets, their total amounts, spent, and remaining balances.
-- **Persistence:** All data is stored locally using Hive, so your budgets and expenses are saved between sessions.
+- **Savings Plans/Goals:** Set savings goals with target amounts and deadlines. Track your progress visually on the dashboard.
+- **Dashboard:** View all budgets, savings goals, their total amounts, spent, saved, and remaining balances.
+- **Theme Toggle:** Easily switch between dark and light mode from the dashboard for a comfortable viewing experience.
+- **Persistence:** All data is stored locally using Hive, so your budgets, expenses, and savings plans are saved between sessions.
 
 ## Project Structure
 - `lib/models/` - Data models for budgets, expenses, and users
@@ -52,6 +56,31 @@ A personal budgeting app built with Flutter. Track your budgets, expenses, and m
 - `lib/services/` - Local storage and user services
 - `lib/widgets/` - Reusable UI components
 - `lib/theme/` - App theming
+
+| AppBar: Budget Dashboard                        |
+| [Budget Card]  [Budget Card]  [Budget Card]     |
+| [Budget Name]  [Budget Name]  [Budget Name]     |
+| $Amount       $Amount       $Amount             |
+| $Spent/$Total $Spent/$Total $Spent/$Total       |
+| + Add Budget                                    |
+| AppBar: Create Budget                           |
+| [Form: Budget Name]                             |
+| [Form: Amount]                                  |
+| [Create Budget Button]                          |
+| AppBar: [Budget Name]                           |
+| $Total Budget                                   |
+| $Spent / $Remaining                             |
+|-------------------------------------------------|
+| Expenses:                                       |
+|  - [Expense Tile]                               |
+|  - [Expense Tile]                               |
+|  - ...                                          |
+|-------------------------------------------------|
+| + Add Expense                                   |
+| AppBar: Add Expense                             |
+| [Form: Expense Name]                            |
+| [Form: Amount]                                  |
+| [Create Expense Button]                         |
 
 ## Wireframes / UI Layout
 
@@ -62,13 +91,20 @@ Below are rough wireframes to illustrate the main screens of the app:
 ```
 ---------------------------------------------------
 | AppBar: Budget Dashboard                        |
+| [Theme Toggle: 🌙/☀️]                            |
 ---------------------------------------------------
 | [Budget Card]  [Budget Card]  [Budget Card]     |
 | [Budget Name]  [Budget Name]  [Budget Name]     |
 | $Amount       $Amount       $Amount             |
 | $Spent/$Total $Spent/$Total $Spent/$Total       |
 ---------------------------------------------------
-| + Add Budget                                    |
+| [Savings Goals Overview]                        |
+| [Savings Goal Card] [Savings Goal Card]         |
+| Goal: Vacation  Goal: Emergency Fund            |
+| $Saved/$Target  $Saved/$Target                  |
+| Progress Bar                                   |
+---------------------------------------------------
+| + Add Budget    + Add Savings Goal              |
 ---------------------------------------------------
 ```
 
@@ -99,6 +135,20 @@ Below are rough wireframes to illustrate the main screens of the app:
 |  - ...                                          |
 |-------------------------------------------------|
 | + Add Expense                                   |
+---------------------------------------------------
+```
+
+### Savings Goal Page
+
+```
+---------------------------------------------------
+| AppBar: Savings Goals                           |
+---------------------------------------------------
+| [Savings Goal List]                             |
+| Goal: Vacation  $Saved/$Target  Progress Bar    |
+| Goal: Emergency  $Saved/$Target  Progress Bar   |
+| ...                                             |
+| + Add Savings Goal                              |
 ---------------------------------------------------
 ```
 
