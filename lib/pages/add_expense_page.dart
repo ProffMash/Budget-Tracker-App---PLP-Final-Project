@@ -25,6 +25,8 @@ class _AddExpensePageState extends State<AddExpensePage> {
     super.dispose();
   }
 
+  bool _showSuccess = false;
+
   void _addExpense() {
     if (_formKey.currentState!.validate()) {
       final expense = Expense(
@@ -36,8 +38,18 @@ class _AddExpensePageState extends State<AddExpensePage> {
       );
 
       Hive.box<Expense>('expenses').add(expense);
-      Navigator.pop(context);
-      Fluttertoast.showToast(msg: 'Expense added successfully');
+      setState(() {
+        _showSuccess = true;
+      });
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) {
+          setState(() {
+            _showSuccess = false;
+          });
+          Navigator.pop(context);
+          Fluttertoast.showToast(msg: 'Expense added successfully');
+        }
+      });
     }
   }
 
@@ -53,6 +65,29 @@ class _AddExpensePageState extends State<AddExpensePage> {
           key: _formKey,
           child: Column(
             children: [
+              AnimatedOpacity(
+                opacity: _showSuccess ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 600),
+                curve: Curves.easeInOut,
+                child: _showSuccess
+                    ? Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.only(bottom: 12),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade400,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Text(
+                          'Expense added successfully!',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ),
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(

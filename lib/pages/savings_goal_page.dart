@@ -10,6 +10,8 @@ class SavingsGoalPage extends StatefulWidget {
 }
 
 class _SavingsGoalPageState extends State<SavingsGoalPage> {
+  bool _showSuccess = false;
+  String _successMsg = '';
   final SavingsGoalService _service = SavingsGoalService();
   List<SavingsGoal> _goals = [];
 
@@ -23,6 +25,20 @@ class _SavingsGoalPageState extends State<SavingsGoalPage> {
     final goals = await _service.getGoals();
     setState(() {
       _goals = goals;
+    });
+  }
+
+  void _showAnimatedSuccess(String msg) {
+    setState(() {
+      _showSuccess = true;
+      _successMsg = msg;
+    });
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          _showSuccess = false;
+        });
+      }
     });
   }
 
@@ -61,6 +77,7 @@ class _SavingsGoalPageState extends State<SavingsGoalPage> {
                     .addGoal(SavingsGoal(title: title, targetAmount: target));
                 Navigator.pop(context);
                 _loadGoals();
+                _showAnimatedSuccess('Goal added successfully!');
               }
             },
             child: Text('Add'),
@@ -116,6 +133,7 @@ class _SavingsGoalPageState extends State<SavingsGoalPage> {
                 await _service.updateGoal(goal);
                 Navigator.pop(context);
                 _loadGoals();
+                _showAnimatedSuccess('Goal updated successfully!');
               }
             },
             child: Text('Save'),
@@ -149,6 +167,7 @@ class _SavingsGoalPageState extends State<SavingsGoalPage> {
                 await _service.updateGoal(goal);
                 Navigator.pop(context);
                 _loadGoals();
+                _showAnimatedSuccess('Savings incremented!');
               }
             },
             child: Text('Add'),
@@ -174,6 +193,7 @@ class _SavingsGoalPageState extends State<SavingsGoalPage> {
               await _service.deleteGoal(goal);
               Navigator.pop(context);
               _loadGoals();
+              _showAnimatedSuccess('Goal deleted!');
             },
             child: Text('Delete'),
             style: ButtonStyle(
@@ -236,15 +256,43 @@ class _SavingsGoalPageState extends State<SavingsGoalPage> {
           ),
         ],
       ),
-      body: _goals.isEmpty
-          ? Center(child: Text('No savings goals yet.'))
-          : ListView(
-              children: _goals.map(_buildGoalTile).toList(),
-            ),
-      // Optionally keep the FAB for mobile UX
+      body: Column(
+        children: [
+          AnimatedOpacity(
+            opacity: _showSuccess ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.easeInOut,
+            child: _showSuccess
+                ? Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(bottom: 12, top: 8),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade400,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      _successMsg,
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
+          Expanded(
+            child: _goals.isEmpty
+                ? const Center(child: Text('No savings goals yet.'))
+                : ListView(
+                    children: _goals.map(_buildGoalTile).toList(),
+                  ),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddGoalDialog,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         tooltip: 'Add Savings Goal',
       ),
     );

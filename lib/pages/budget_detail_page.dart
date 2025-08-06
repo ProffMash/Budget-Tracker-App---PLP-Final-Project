@@ -20,6 +20,7 @@ class _BudgetDetailPageState extends State<BudgetDetailPage> {
   late Box<Budget> _budgetBox;
   late Box<Expense> _expenseBox;
   late Budget _budget;
+  bool _showSuccess = false;
 
   @override
   void initState() {
@@ -43,6 +44,29 @@ class _BudgetDetailPageState extends State<BudgetDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            AnimatedOpacity(
+              opacity: _showSuccess ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 600),
+              curve: Curves.easeInOut,
+              child: _showSuccess
+                  ? Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade400,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        'Action completed successfully!',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
             Text(
               '# ${_budget.name} Overview',
               style: const TextStyle(
@@ -94,14 +118,27 @@ class _BudgetDetailPageState extends State<BudgetDetailPage> {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
+              onPressed: () async {
+                await Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) =>
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
                         AddExpensePage(budgetId: widget.budgetId),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      const begin = Offset(1.0, 0.0);
+                      const end = Offset.zero;
+                      const curve = Curves.easeInOut;
+                      var tween = Tween(begin: begin, end: end)
+                          .chain(CurveTween(curve: curve));
+                      return SlideTransition(
+                        position: animation.drive(tween),
+                        child: child,
+                      );
+                    },
                   ),
                 );
+                _showAnimatedSuccess();
               },
               child: const Text('Add Expense'),
             ),
@@ -161,6 +198,7 @@ class _BudgetDetailPageState extends State<BudgetDetailPage> {
               _budgetBox.delete(widget.budgetId);
               Navigator.pop(context);
               Navigator.pop(context);
+              _showAnimatedSuccess();
               Fluttertoast.showToast(msg: 'Budget deleted successfully');
             },
             child: const Text('Delete'),
@@ -185,6 +223,7 @@ class _BudgetDetailPageState extends State<BudgetDetailPage> {
             onPressed: () {
               _expenseBox.delete(id);
               Navigator.pop(context);
+              _showAnimatedSuccess();
               Fluttertoast.showToast(msg: 'Expense deleted successfully');
             },
             child: const Text('Delete'),
@@ -192,5 +231,18 @@ class _BudgetDetailPageState extends State<BudgetDetailPage> {
         ],
       ),
     );
+  }
+
+  void _showAnimatedSuccess() {
+    setState(() {
+      _showSuccess = true;
+    });
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          _showSuccess = false;
+        });
+      }
+    });
   }
 }

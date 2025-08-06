@@ -24,6 +24,8 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
     super.dispose();
   }
 
+  bool _showSuccess = false;
+
   void _createBudget() {
     if (_formKey.currentState!.validate()) {
       final budget = Budget(
@@ -34,11 +36,36 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
       );
 
       Hive.box<Budget>('budgets').add(budget);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const DashboardPage()),
-      );
-      Fluttertoast.showToast(msg: 'Budget created successfully');
+      setState(() {
+        _showSuccess = true;
+      });
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) {
+          setState(() {
+            _showSuccess = false;
+          });
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const DashboardPage(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                const begin = Offset(1.0, 0.0);
+                const end = Offset.zero;
+                const curve = Curves.easeInOut;
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+                return SlideTransition(
+                  position: animation.drive(tween),
+                  child: child,
+                );
+              },
+            ),
+          );
+          Fluttertoast.showToast(msg: 'Budget created successfully');
+        }
+      });
     }
   }
 
@@ -54,6 +81,29 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
           key: _formKey,
           child: Column(
             children: [
+              AnimatedOpacity(
+                opacity: _showSuccess ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 600),
+                curve: Curves.easeInOut,
+                child: _showSuccess
+                    ? Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.only(bottom: 12),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade400,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Text(
+                          'Budget created successfully!',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ),
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(
